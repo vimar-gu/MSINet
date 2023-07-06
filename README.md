@@ -63,10 +63,11 @@ python search.py -ds market1501
 ## Citation
 
 ```
-@article{gu2023msinet,
+@inproceedings{gu2023msinet,
   title={MSINet: Twins Contrastive Search of Multi-Scale Interaction for Object ReID},
   author={Gu, Jianyang and Wang, Kai and Luo, Hao and Chen, Chen and Jiang, Wei and Fang, Yuqiang and Zhang, Shanghang and You, Yang and Zhao, Jian},
-  journal={arXiv preprint arXiv:2303.07065},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={19243--19253},
   year={2023}
 }
 ```
