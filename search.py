@@ -11,7 +11,6 @@ from torch.backends import cudnn
 from reid.data import build_data
 from reid.models.search_cnn import build_search_model
 from reid.models.cm import ClusterMemory
-from reid.criterion import build_criterion
 from reid.solver import build_optimizer
 from reid.engine.searcher import do_search
 from reid.utils.logging import Logger
@@ -39,7 +38,8 @@ def main(args):
     optimizer, lr_scheduler = build_optimizer(args, model)
 
     do_search(args, model, train_memory, train_loader, valid_loader,
-              test_loader, optimizer, lr_scheduler, num_query)
+              test_loader, optimizer, lr_scheduler, num_query,
+              remove_cam=(args.source_dataset != 'vehicleid'))
 
 
 if __name__ == '__main__':

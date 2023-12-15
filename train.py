@@ -51,11 +51,13 @@ def main(args):
     optimizer, lr_scheduler = build_optimizer(args, model)
 
     do_train(args, model, criterion, train_loader, test_loader,
-             optimizer, lr_scheduler, num_query)
+             optimizer, lr_scheduler, num_query,
+             remove_cam=(args.source_dataset != 'vehicleid'))
 
     if args.target_dataset != 'none':
         _, tar_test_loader, tar_num_query, _ = build_data(args, target=True)
-        evaluate(args, model, tar_test_loader, tar_num_query)
+        evaluate(args, model, tar_test_loader, tar_num_query,
+                 remove_cam=(args.target_dataset != 'vehicleid'))
 
 
 if __name__ == '__main__':

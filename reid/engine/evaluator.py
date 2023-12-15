@@ -6,10 +6,10 @@ from ..utils.meters import AverageMeter
 from ..utils.metrics import R1_mAP
 
 
-def evaluate(args, model, test_loader, num_query):
+def evaluate(args, model, test_loader, num_query, remove_cam):
     """Standard Re-ID evaluating engine."""
     print_freq = args.print_freq
-    evaluator = R1_mAP(num_query, max_rank=50, feat_norm=True)
+    evaluator = R1_mAP(num_query, max_rank=50, feat_norm=True, remove_cam=remove_cam)
     evaluator.reset()
 
     model.eval()

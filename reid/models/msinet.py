@@ -108,7 +108,10 @@ class MSINet(nn.Module):
 
         self.sam_mode = args.sam_mode
         if args.sam_mode != 'none':
-            self.align_module = AlignModule(16, 8, channels[-1])
+            if args.source_dataset in ['veri', 'vehicleid']:
+                self.align_module = AlignModule(16, 16, channels[-1])
+            else:
+                self.align_module = AlignModule(16, 8, channels[-1])
 
         self._init_params()
 

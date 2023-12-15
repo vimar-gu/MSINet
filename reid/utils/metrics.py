@@ -26,7 +26,7 @@ def cosine_similarity(qf, gf):
     return dist_mat
 
 
-def eval_func(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50):
+def eval_func(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50, remove_cam=True):
     """Evaluation with market1501 metric
         Key: for each query identity, its gallery images from the same camera view are discarded.
         """
@@ -57,7 +57,10 @@ def eval_func(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50):
 
         # compute cmc curve
         # binary vector, positions with value 1 are correct matches
-        orig_cmc = matches[q_idx][keep]
+        if remove_cam:
+            orig_cmc = matches[q_idx][keep]
+        else:
+            orig_cmc = matches[q_idx]
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
@@ -87,13 +90,14 @@ def eval_func(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50):
 
 
 class R1_mAP():
-    def __init__(self, num_query, max_rank=50, feat_norm=True, method='euclidean', reranking=False):
+    def __init__(self, num_query, max_rank=50, feat_norm=True, method='euclidean', reranking=False, remove_cam=True):
         super(R1_mAP, self).__init__()
         self.num_query = num_query
         self.max_rank = max_rank
         self.feat_norm = feat_norm
         self.method = method
-        self.reranking=reranking
+        self.reranking = reranking
+        self.remove_cam = remove_cam
 
     def reset(self):
         self.feats = []
@@ -121,7 +125,6 @@ class R1_mAP():
         g_camids = np.asarray(self.camids[self.num_query:])
         if self.reranking:
             print('=> Enter reranking')
-            # distmat = re_ranking(qf, gf, k1=20, k2=6, lambda_value=0.3)
             distmat = re_ranking(qf, gf, k1=30, k2=10, lambda_value=0.2)
 
         else:
@@ -131,6 +134,6 @@ class R1_mAP():
             elif self.method == 'cosine':
                 print('=> Computing DistMat with cosine similarity')
                 distmat = cosine_similarity(qf, gf)
-        cmc, mAP = eval_func(distmat, q_pids, g_pids, q_camids, g_camids)
+        cmc, mAP = eval_func(distmat, q_pids, g_pids, q_camids, g_camids, remove_cam=self.remove_cam)
 
         return cmc, mAP, distmat, self.pids, self.camids, qf, gf

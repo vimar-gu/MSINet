@@ -7,7 +7,7 @@ from ..utils.metrics import R1_mAP
 
 
 def do_train(args, model, criterion, train_loader, test_loader,
-             optimizer, lr_scheduler, num_query):
+             optimizer, lr_scheduler, num_query, remove_cam):
     """Standard Re-ID training engine."""
     loss_meter = AverageMeter()
     acc_meter = AverageMeter()
@@ -44,7 +44,7 @@ def do_train(args, model, criterion, train_loader, test_loader,
 
         if (epoch + 1) % eval_interval == 0 or (epoch + 1) == args.epochs:
             torch.save(model.state_dict(), osp.join(args.logs_dir, 'model_{}.pth'.format(epoch)))
-            evaluator = R1_mAP(num_query, max_rank=50, feat_norm=True)
+            evaluator = R1_mAP(num_query, max_rank=50, feat_norm=True, remove_cam=remove_cam)
             evaluator.reset()
             model.eval()
             for n_iter, (img, pid, camid) in enumerate(test_loader):
